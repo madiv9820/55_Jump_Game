@@ -2,21 +2,23 @@ from typing import List
 
 class Solution:
     def canJump(self, nums: List[int]) -> bool:
-        n = len(nums)  # Get the length of the input list 'nums'
-        dp = [False] * n  # Initialize a list to track if we can reach the end from each index
-        dp[n-1] = True  # The last index is reachable from itself
+        farthest_Distance_Covered = 0  # Initialize the farthest index that can be reached
 
-        # Iterate backwards from the second-to-last index to the first index
-        for index in range(n - 2, -1, -1):
-            # Check all possible jumps from the current index
-            for step in range(1, nums[index] + 1):  # Corrected range to include the maximum steps
-                next_Index = index + step  # Calculate the next index to jump to
-                if next_Index < n:  # Ensure the next index is within bounds
-                    dp[index] = dp[index] or dp[next_Index]  # Update the dp value for the current index
-                if dp[index]:  # If we can reach the end from this index, no need to check further
-                    break
+        # Iterate through each index in the nums list
+        for index in range(len(nums)):
+            # Check if the current index is reachable
+            if index > farthest_Distance_Covered:
+                return False  # If we cannot reach this index, return False
+            
+            # Update the farthest index we can reach from the current index
+            current_Distance_Covered = index + nums[index]
+            farthest_Distance_Covered = max(farthest_Distance_Covered, current_Distance_Covered)
 
-        return dp[0]  # Return the reachability status from the first index
+            # If the farthest index reaches or exceeds the last index, return True
+            if farthest_Distance_Covered >= len(nums) - 1:
+                return True
 
-# Time Complexity: O(n^2) in the worst case due to the nested loops where each index checks possible jumps.
-# Space Complexity: O(n) due to the dp array used to store reachability from each index.
+        return False  # If we finish the loop without reaching the last index, return False
+
+# Time Complexity: O(n) since we iterate through the nums list once.
+# Space Complexity: O(1) as we only use a constant amount of extra space (farthest_Distance_Covered)
